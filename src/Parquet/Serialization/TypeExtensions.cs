@@ -113,7 +113,10 @@ namespace Parquet.Serialization
                 || pi.PropertyType == typeof(Holosweat.WorkoutScene)
                 || pi.PropertyType == typeof(Holosweat.CustomEvent)
                 || (parentTypes.Contains(typeof(Holosweat.ApplicationEvent.Types.StartWorkout)))
-                || pi.PropertyType == typeof(Holosweat.UUID)
+                || (
+                    pi.PropertyType == typeof(Holosweat.UUID)
+                    && pi.DeclaringType == typeof(Holosweat.UUID)
+                )
                 || pi.IsSpecialName
                 || pi.Name == "Item"
             )
@@ -192,7 +195,9 @@ namespace Parquet.Serialization
         {
             if (parentTypes.Contains(t))
             {
-                throw new InvalidOperationException($"Parent types {string.Join(";", parentTypes.Select(i => i.FullName))} already contain {t} p={propertyName} {pi?.PropertyType} {pi?.DeclaringType}");
+                throw new InvalidOperationException(
+                    $"Parent types {string.Join(";", parentTypes.Select(i => i.FullName))} already contain {t} p={propertyName} {pi?.PropertyType} {pi?.DeclaringType}"
+                );
             }
             try
             {
